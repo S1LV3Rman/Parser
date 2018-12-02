@@ -1,0 +1,275 @@
+﻿<!DOCTYPE html>
+
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script>
+        var word, ch, i, isWord;
+
+        function Expression() {
+            if (ch == '(') {
+                if (ch = '(')
+                    Read();
+                else
+                    Error();
+
+                Subexpression();
+                Addition_Subtraction();
+                Tail_plus();
+
+                if (ch == ')')
+                    Read();
+                else
+                    Error();
+
+                Multiplication_Division();
+                Tail_plus();
+
+            } else if (ch >= 'a' && ch <= 'z') {
+                Letter();
+                Tail();
+
+            } else Error();
+        }
+
+        function Addition_Subtraction() {
+            if (ch == '+') {
+                if (ch == '+')
+                    Read();
+                else
+                    Error();
+                Subexpression();
+
+            } else if (ch == '-') {
+                if (ch == '-')
+                    Read();
+                else
+                    Error();
+                Subexpression_asterisk();
+
+            } else Error();
+        }
+
+        function Multiplication_Division() {
+            if (ch == '*') {
+                if (ch == '*')
+                    Read();
+                else
+                    Error();
+                Subexpression_asterisk();
+
+            } else if (ch == '/') {
+                if (ch == '/')
+                    Read();
+                else
+                    Error();
+                Subexpression_slash();
+
+            } else Error();
+        }
+
+        function Subexpression() {
+            if (ch == '(') {
+                if (ch = '(')
+                    Read();
+                else
+                    Error();
+
+                Subexpression();
+                Addition_Subtraction();
+                Tail_plus();
+
+                if (ch == ')')
+                    Read();
+                else
+                    Error();
+
+                Multiplication_Division();
+
+            } else if (ch >= 'a' && ch <= 'z') {
+                Letter();
+                Tail_asterisk();
+
+            } else Error();
+        }
+
+        function Subexpression_asterisk() {
+            if (ch == '(') {
+                if (ch = '(')
+                    Read();
+                else
+                    Error();
+
+                Subexpression();
+                Addition_Subtraction();
+                Tail_plus();
+
+                if (ch == ')')
+                    Read();
+                else
+                    Error();
+
+                Tail_asterisk();
+
+            } else if (ch >= 'a' && ch <= 'z') {
+                Letter();
+                Tail_asterisk();
+
+            } else Error();
+        }
+
+        function Subexpression_slash() {
+            if (ch == '(') {
+                if (ch = '(')
+                    Read();
+                else
+                    Error();
+
+                Operation();
+                Tail_plus();
+
+                if (ch == ')')
+                    Read();
+                else
+                    Error();
+
+            } else if (ch >= 'a' && ch <= 'z') {
+                Letter();
+
+            } else Error();
+        }
+
+        function Operation() {
+            if (ch == '(') {
+                if (ch = '(')
+                    Read();
+                else
+                    Error();
+
+                Subexpression();
+                Addition_Subtraction();
+                Tail_plus();
+
+                if (ch == ')')
+                    Read();
+                else
+                    Error();
+
+                Multiplication_Division();
+
+            } else if (ch >= 'a' && ch <= 'z') {
+                Letter();
+                Extention();
+
+            } else Error();
+        }
+
+        function Extention() {
+            if (ch == '+' || ch == '-') {
+                Addition_Subtraction();
+
+            } else if (ch == '*' || ch == '/') {
+                Multiplication_Division();
+
+            } else Error();
+        }
+
+        function Tail() {
+            if (ch == '+' || ch == '-') {
+                Addition_Subtraction();
+                Tail_plus();
+
+            } else if (ch == '*' || ch == '/') {
+                Multiplication_Division();
+                Tail_plus();
+            }
+        }
+
+        function Tail_asterisk() {
+            if (ch == '*' || ch == '/')
+                Multiplication_Division();
+        }
+
+        function Tail_plus() {
+            if (ch == '+' || ch == '-') {
+                Addition_Subtraction();
+                Tail_plus();
+            }
+        }
+
+        function Letter() {
+            if (ch >= 'a' && ch <= 'z')
+                Read();
+            else
+                Error();
+        }
+
+        function Read() {
+            if (isWord) {
+                if (i > message.length)
+                    Error();
+                else
+                    ch = message[i++];
+            }
+        }
+
+        function Error() {
+            isWord = false;
+        }
+
+        function Parse() {
+
+            message = document.getElementById('text').value;
+            i = 0;
+            isWord = true;
+            Read();
+            Expression()
+
+            if (isWord && i - 1 == message.length)
+                document.getElementById('res').value = "This word belongs to the language!";
+            else
+                document.getElementById('res').value = "This word does not belong to the language!";
+        }
+    </script>
+    <style>
+        button {
+            background-color: #4CAF50;
+            border: none;
+            color: white;
+            padding: 8px 16px;
+            text-align: center;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+            button:hover {
+                background-color: green;
+            }
+
+        input {
+            font-size: 16px;
+            padding: 4px 4px;
+        }
+
+        output {
+            font-size: 16px;
+            padding: 4px 4px;
+        }
+
+        section {
+            align-self:center;
+            text-align:center;
+        }
+    </style>
+</head>
+
+<body>
+    <section>
+        <input id="text" name="Text" type="text" placeholder="Enter the word" size="30">
+        <button onclick="Parse()">Check</button>
+        <br>
+        <output id="res" for="text"></output>
+    </section>
+</body>
+</html>
